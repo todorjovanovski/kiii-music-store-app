@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  music-store-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Todor123!"
+      ACCEPT_EULA: "Y"
+    container_name: music-store-db
+    ports:
+      - "1433:1433"
+
+  music-store-app:
+    image: tosh3/kiii-music-store-app
+    container_name: music-store-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - music-store-db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
