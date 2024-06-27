@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-store-app-dply
+  namespace: music-store
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: music-store-app
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: music-store-app
+    spec:
+      containers:
+      - name: music-store-app-pod
+        image: tosh3/kiii-music-store-app
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: music-store-app-config
+              key: ASPNETCORE_ENVIRONMENT

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: music-store-db
+  namespace: music-store
+spec:
+  serviceName: "music-store-db-svc"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: music-store-db
+  template:
+    metadata:
+      labels:
+        app: music-store-db
+    spec:
+      containers:
+      - name: music-store-db
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: music-store-db-secret
+              key: SA_PASSWORD
+        - name: ACCEPT_EULA
+          valueFrom:
+            configMapKeyRef:
+              name: music-store-app-config
+              key: ACCEPT_EULA
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql
+  volumeClaimTemplates:
+  - metadata:
+      name: mssql-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
