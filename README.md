@@ -1,2 +1,2 @@
-# music-store-app
-Music store CRUD application in .NET - Integrated systems project
+# Music Store App
+Music store CRUD application in .NET - CI/CD project
